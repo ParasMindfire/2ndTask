@@ -15,23 +15,18 @@ export class StateManagement{
     addPeoples(people:{name: string; email: string; phone: string}):void{
         console.log("array ara ??")
         this.peoples.push(people);
-        this.notifyStateChange();
+        this.notifyStateChange(true);
     }
 
     getPeoples():{ name: string; email: string; phone: string }[]{
         return this.peoples;
     }
 
-    notifyStateChange():void{
-        document.dispatchEvent(new CustomEvent("StateChange"));
+    notifyStateChange(flag:boolean):void{
+        document.dispatchEvent(new CustomEvent("StateChange",{detail:{flag}}));
     }
 
-    buttonOnEdit(row:any):void{
-        document.dispatchEvent(new CustomEvent("onEdit",{detail:{row}}));
+    setPeoples(peoples: { name: string; email: string; phone: string }[]):void{
+        this.peoples=peoples;
     }
-
-    openToast(message:string,style:string){
-        document.dispatchEvent(new CustomEvent("openToast",{detail:{message,style}}));
-    }
-    
 }

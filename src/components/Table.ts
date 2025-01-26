@@ -26,26 +26,33 @@ export class TableComponent extends BaseComponent {
 
         console.log("render ",peoples) ;
         return `
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${peoples[0]?.name.length!=0 && peoples.map((people:{ name: string; email: string; phone: string }) => `
+            <div class="table-container">
+                <table border="1">
+                    <thead>
                         <tr>
-                            <td>${people.name}</td>
-                            <td>${people.email}</td>
-                            <td>${people.phone}</td>
-                            <td><button id="edit">edit</button><button id="delete">delete</button></td>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Action</th>
                         </tr>
-                    `).join('')}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        ${peoples[0]?.name.length!=0 && peoples.map((people:{ name: string; email: string; phone: string }) => `
+                            <tr>
+                                <td>${people.name}</td>
+                                <td>${people.email}</td>
+                                <td>${people.phone}</td>
+                                <td>
+                                    <div class="tableBtn">
+                                        <button id="edit">edit</button>
+                                        <button id="delete">delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
         `;
     }
 
@@ -71,13 +78,17 @@ export class TableComponent extends BaseComponent {
 
         if (row) {
             const cells = row.getElementsByTagName("td");
-            (document.getElementById("name") as HTMLInputElement).value=cells[0].innerText ;
+            (document.getElementById("fullName") as HTMLInputElement).value=cells[0].innerText ;
             (document.getElementById("email") as HTMLInputElement).value=cells[1].innerText ;
             (document.getElementById("phone") as HTMLInputElement).value=cells[2].innerText;
             (document.getElementById("submit") as HTMLElement).innerText = "Edit";
 
-            this.stateManager.buttonOnEdit(row);
+            this.buttonOnEdit(row);
         }
+    }
+
+    buttonOnEdit(row:any):void{
+        document.dispatchEvent(new CustomEvent("onEdit",{detail:{row}}));
     }
 
     handleDelete(element: HTMLElement): void {
@@ -91,15 +102,20 @@ export class TableComponent extends BaseComponent {
             const objIndex = peoples.findIndex((pep: { name: string; email: string; phone: string }) => {
                 return pep.email === emailToDelete;
             });
-    
+            
             if (objIndex !== -1) {
                 peoples.splice(objIndex, 1);
                 console.log("people after delete", peoples);
-                this.stateManager.notifyStateChange();
+                this.stateManager.notifyStateChange(true);
             }
 
-            this.stateManager.openToast("Form deleted Successfully","safe");
+            this.toastCustomEvent("Form deleted Successfully","safe");
         }
+    }
+
+    toastCustomEvent(message:string,action:string):void{
+        const toastDetails={message:message,action:action};
+        document.dispatchEvent(new CustomEvent("onToast",{detail:{toastDetails}}))
     }
 
 

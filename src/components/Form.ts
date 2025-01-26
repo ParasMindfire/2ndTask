@@ -5,11 +5,13 @@ export class FormComponent extends BaseComponent{
     private static instance: FormComponent;
     protected stateManager:StateManagement;
     public row:any;
+    public isValid:boolean;
 
     constructor(stateManager:StateManagement){
         super();
         this.stateManager=stateManager;
         this.row=null;
+        this.isValid=true;
         // console.log("heloo form");
     }
 
@@ -28,20 +30,48 @@ export class FormComponent extends BaseComponent{
                 <form id="userForm">
                     <div class="form-group">
                         <label for="name">Name:</label>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="fullName" name="fullName">
+                        <span id="fullName-error" class="error-message"></span>
                     </div>
                     <div class="form-group">
                         <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="text" id="email" name="email">
+                        <span id="email-error" class="error-message"></span>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone:</label>
-                        <input type="tel" id="phone" name="phone" required>
+                        <input type="text" id="phone" name="phone">
+                        <span id="phone-error" class="error-message"></span>
                     </div>
-                    <button type="submit" id="submit">Submit</button>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="text" id="password" name="password">
+                        <span id="password-error" class="error-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender:</label>
+                        <select id="gender" name="gender">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <span id="gender-error" class="error-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address:</label>
+                        <input type="text" id="address" name="address">
+                        <span id="address-error" class="error-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthday">Birthday:</label>
+                        <input type="date" id="birthday" name="birthday">
+                        <span id="birthday-error" class="error-message"></span>
+                    </div>
+                    <button type="submit" id="submit" class="btn">Submit</button>
                 </form>
             </div>
-        `
+        `;
     }
 
     mount(containerID:string):void{
@@ -49,43 +79,78 @@ export class FormComponent extends BaseComponent{
         document.getElementById("userForm")!.addEventListener("submit",(event)=>{
             this.handleSubmit(event);
         })
+        this.handleValidation();
     }
 
     handleSubmit(event:Event):void{
+
+        this.validateBeforeSubmit();
+
+        console.log("IsvALid main",this.isValid);
+
         event.preventDefault();
-        const name=(document.getElementById("name") as HTMLInputElement).value;
+        const name=(document.getElementById("fullName") as HTMLInputElement).value;
         const email=(document.getElementById("email") as HTMLInputElement).value;
         const phone=(document.getElementById("phone") as HTMLInputElement).value;
 
         const submit=(document.getElementById("submit") as HTMLElement);
 
-        if(this.row==null){
-            this.stateManager.addPeoples({name,email,phone});
-            this.stateManager.openToast("Form Submitted Successfully","safe");
+        if(this.isValid){
+            if(this.row==null){
+                this.stateManager.addPeoples({name,email,phone});
+                this.toastCustomEvent("Form Submitted Successfully","safe");
+            }else{
+                const cells = this.row.getElementsByTagName("td");
+                const peoples = this.stateManager.getPeoples();
+                const obj:{ name: string; email: string; phone: string}=peoples.find((pep:{name:string,email:string,phone:string})=>{
+                    return pep.email==cells[1].innerText;
+                })
+    
+                const idx:number=peoples.indexOf(obj);
+    
+                peoples[idx]={name,email,phone};
+    
+                cells[0].innerText=name;
+                cells[1].innerText=email;
+                cells[2].innerText=phone;
+    
+                submit.innerText="Submit";
+                this.row=null;
+    
+                this.stateManager.notifyStateChange(true);
+                this.toastCustomEvent("Form edited Successfully","safe");
+            }
+
+            this.isValid=true;
+
+            const resetForm = <HTMLFormElement>document.getElementById("userForm");
+            resetForm?.reset();
         }else{
-            const cells = this.row.getElementsByTagName("td");
-            const peoples = this.stateManager.getPeoples();
-            const obj:{ name: string; email: string; phone: string}=peoples.find((pep:{name:string,email:string,phone:string})=>{
-                return pep.email==cells[1].innerText;
-            })
+            this.toastCustomEvent("Enter All Fields Before Submitting","danger");
+        }   
+    }
 
-            const idx:number=peoples.indexOf(obj);
+    toastCustomEvent(message:string,action:string):void{
+        const toastDetails={message:message,action:action};
+        document.dispatchEvent(new CustomEvent("onToast",{detail:{toastDetails}}))
+    }
 
-            peoples[idx]={name,email,phone};
+    validateBeforeSubmit():void{
+        document.dispatchEvent(new CustomEvent("beforeSubmit"));
+    }
 
-            cells[0].innerText=name;
-            cells[1].innerText=email;
-            cells[2].innerText=phone;
+    handleValidation(): void {
+        const inputs = document.querySelectorAll<HTMLInputElement>("#userForm input, #userForm select");
+        inputs.forEach(input => {
+            input.addEventListener("blur", () => {
+                // console.log("form Input",input.name);
+                this.validationOnBlur({field:input.name,value:input.value})
+            });
+        });
+    }
 
-            submit.innerText="Submit";
-            this.row=null;
-
-            this.stateManager.notifyStateChange();
-            this.stateManager.openToast("Form edited Successfully","safe");
-        }
-        
-
-        const resetForm = <HTMLFormElement>document.getElementById("userForm");
-        resetForm?.reset();
+    validationOnBlur(details: { field: string, value: string }){
+        // console.log("State field",details.field);
+        document.dispatchEvent(new CustomEvent("onBlurValidation",{detail:{details}}));
     }
 }

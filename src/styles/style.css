@@ -1,0 +1,308 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+
+/* --------------app--------------- */
+
+#appComponent{
+  background-color: red;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background: #000;
+  padding:1%;
+}
+
+#top{
+  margin-top: 2%;
+  color: white;
+  height:15%;
+  border:2px solid red;
+  box-shadow: 0 0 30px rgb(134, 3, 113); 
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(218, 13, 183, 0.3);
+}
+
+.topbar{
+  padding-left: 82%;
+  display: flex;
+  margin-top:3%;
+  /* border: 2px solid red; */
+}
+
+.topbar select{
+  margin-left: 10px;
+  width:100px;
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 16px;
+  color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-style: italic;
+}
+
+.topbar select:focus{
+  border-color: rgb(134, 3, 113);
+  outline: none;
+  box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+.topbar select:hover{
+  background-color: rgb(134, 3, 113);
+  color:white;
+}
+
+
+/* ---------------main--------------- */
+
+
+#mainComponent{
+  height:85%;
+  display: grid;
+  grid-template-columns: 1fr 1.8fr;
+  gap: 80px;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+@media screen and (max-width:768px){
+  #mainComponent{
+      grid-template-columns: 1fr;
+  }
+}
+
+
+
+/* --------------Toaster--------------- */
+
+
+.hide{
+  display: none;
+}
+
+.snackbar {
+  transition:all 0.3s ease;
+  width: 250px; 
+  margin-left: -125px;
+  background-color: #333; 
+  color: #fff; 
+  text-align: center; 
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed; 
+  z-index: 4; 
+  right:0;
+}
+
+
+/* ------------------left-------------- */
+
+
+#left{
+  /* border: 2px solid red; */
+  padding-top:10%;
+  height:93%;
+}
+
+
+
+.form-container{
+  display: flex;
+  flex-direction: column;
+  margin:auto;
+  background:black;
+  box-shadow: 0 0 30px rgb(134, 3, 113); 
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(218, 13, 183, 0.3);
+  height:100%;
+  color: white;
+  padding:5% 10% 5% 10%;
+}
+
+.form-group{
+  margin-top: 20px;
+  color:white
+}
+
+.form-group input{
+  width: 100%;
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-shadow: inset 0px 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.form-group input:hover{
+  background-color: rgb(134, 3, 113);
+}
+
+.form-group input:focus{
+  border: 1px solid rgb(134, 3, 113);
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+  outline: none;
+}
+
+
+#gender{
+  width:100%;
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 16px;
+  color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-style: italic;
+}
+
+#gender:focus{
+  border-color: rgb(134, 3, 113);
+  outline: none;
+  box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+#gender:hover{
+  background-color: rgb(134, 3, 113);
+  color:white;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.btn{
+  width: 100px;
+  height:30px;
+  background:rgb(134, 3, 113);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:all 0.3s ease;
+  cursor: pointer;
+  outline:none;
+  border: none;
+  margin-top: 20px;
+}
+
+.btn:hover {
+  background-color:white;
+  color:black;
+  box-shadow: 0 0 30px rgb(134, 3, 113)
+}
+
+
+
+
+
+
+
+/* ------------------right--------------- */
+
+#right{
+  /* border: 2px solid green; */
+  padding-top:5.5%;
+  height:93%;
+}
+
+.table-container{
+  height: 100%;
+  color: white;
+  padding: 20px;
+  background: black;
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  border: 2px solid rgb(134, 3, 113);
+  box-shadow: 0 0 30px rgb(134, 3, 113)
+} 
+
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+table th, table td{
+  border:1px solid rgb(134, 3, 113);
+  padding:8px;
+  text-align: left;
+}
+
+.tableBtn{
+  width:60%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+#edit{
+  width:70px;
+  color: white;
+  background-color:rgb(182, 38, 196) ;
+  border-radius: 16px;
+  transition:all 0.3s ease;
+  cursor: pointer;
+  outline:none;
+  border: none;
+  padding: 2px;
+}
+
+#delete{
+  width:70px;
+  color: white;
+  background-color:rgb(236, 6, 45) ;
+  border-radius: 16px;
+  transition:all 0.3s ease;
+  cursor: pointer;
+  outline:none;
+  border: none;
+  padding: 2px;
+}
+
+#delete:hover,#edit:hover{
+  background-color:white;
+  color:black;
+  box-shadow: 0 0 30px rgb(134, 3, 113)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

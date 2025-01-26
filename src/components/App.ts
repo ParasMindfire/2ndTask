@@ -2,12 +2,20 @@ import { TableComponent } from "./Table.ts";
 import { FormComponent } from "./Form.ts";
 import { BaseComponent } from "./Base.ts";
 import { StateManagement } from "./State.ts";
+import { Validation } from "./Validation.ts";
+import { CustomEventHandler } from "./CustomeEvents.ts";
+import { Toast } from "./Toast.ts";
+import { HistoryComponent } from "./History.ts";
 
 export class AppComponent extends BaseComponent {
     private static instance: AppComponent;
     protected table : TableComponent;
     protected form : FormComponent;
     protected stateManagement: StateManagement;
+    protected validator:Validation;
+    protected customEvent:CustomEventHandler;
+    protected Toast:Toast;
+    protected History:HistoryComponent;
 
     private constructor() {
         super();
@@ -15,6 +23,10 @@ export class AppComponent extends BaseComponent {
         this.stateManagement=StateManagement.getInstance();
         this.table=TableComponent.getInstance(this.stateManagement);
         this.form=FormComponent.getInstance(this.stateManagement);
+        this.validator=new Validation();
+        this.Toast=new Toast();
+        this.History=HistoryComponent.getInstance(this.stateManagement);
+        this.customEvent=new CustomEventHandler(this);
     }
 
     public static getInstance():AppComponent{
@@ -27,48 +39,25 @@ export class AppComponent extends BaseComponent {
 
     render(): string {
         return `   
-            <div id="left">
+            <div id="top">
             </div>
 
-            <div id="right">
+            <div id="mainComponent">
+                <div id="left">
+                </div>
+
+                <div id="right">
+                </div>
             </div>
         `;
     }
 
-    openToast(message:string,action:string){
-        const toaster=document.getElementById("toast");   
-        if(toaster){
-            toaster.classList.remove("hide");
-            if(action=="safe"){
-                toaster.style.backgroundColor="green";
-                toaster.innerText=message;
-            }else{
-                toaster.style.backgroundColor="red";
-                toaster.innerText=message;
-            }
-
-            setTimeout(()=>{
-                toaster.innerText="";
-                toaster.classList.add("hide");
-            },3000)
-        }
-    }
-
     mount(containerID:string): void {
         super.mount(containerID);
+        this.History.mount("top");
         this.form.mount("left");
         this.table.mount("right");
 
-        document.addEventListener("StateChange",()=>{
-            this.table.mount("right");
-        })
-
-        document.addEventListener("onEdit",(e:Event)=>{
-            this.form.row=(e as CustomEvent).detail.row;
-        })
-
-        document.addEventListener("openToast",(e:Event)=>{
-            this.openToast((e as CustomEvent).detail.message,(e as CustomEvent).detail.style);
-        })
+        this.customEvent.initEventListeners();
     }
 }
