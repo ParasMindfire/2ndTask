@@ -18,6 +18,42 @@
   padding:1%;
 }
 
+
+
+
+/* ------------------modal--------------- */
+
+#modal{
+  background: rgba(0, 0, 0, 0.9);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.modal-wrapper {
+  width: 900px;
+  height: 600px;
+  background: ghostwhite;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 16px;
+}
+
+.hide {
+  display: none;
+}
+
+
+
+/* ------------------top----------- */
+
 #top{
   margin-top: 2%;
   color: white;
@@ -30,10 +66,29 @@
 }
 
 .topbar{
-  padding-left: 82%;
+  width:100%;
   display: flex;
-  margin-top:3%;
-  /* border: 2px solid red; */
+  margin-top:1.5%;
+  padding-top: 0.7%;
+}
+
+.topbar-left{
+  /* margin-left: 10%; */
+  /* width:400px; */
+  /* padding-left: 200px; */
+  width:60%;
+}
+
+.topbar-left h2{
+  /* padding-top: 2%; */
+  margin-left: 10%;
+}
+
+.topbar-right{
+  padding-left: 20%;
+  width:40%;
+  display: flex;
+  /* margin-left: 60%; */
 }
 
 .topbar select{
@@ -130,8 +185,9 @@
 }
 
 .form-group{
-  margin-top: 20px;
-  color:white
+  margin-top: 15px;
+  color:white;
+  height:60px;
 }
 
 .form-group input{
@@ -183,6 +239,7 @@
   color: red;
   font-size: 12px;
   margin-top: 5px;
+  height:20px;
 }
 
 .btn{

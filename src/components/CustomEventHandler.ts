@@ -7,9 +7,10 @@ export class CustomEventHandler {
 
     public initEventListeners(): void {
         document.addEventListener("StateChange", (e:Event) => {
-            const {flag}=(e as CustomEvent).detail;
-            this.appInstance.History.updateHistory();
+            const {flag,peoples}=(e as CustomEvent).detail;
+            if(flag)this.appInstance.History.updateHistory(peoples);
             this.appInstance.table.mount("right");
+            // this.appInstance.History.updateStateDropdown(peoples);
         });
 
         document.addEventListener("onEdit", (e: Event) => {
@@ -27,7 +28,7 @@ export class CustomEventHandler {
             this.appInstance.form.isValid = areAllValid
             // console.log("Are All Valid",areAllVAlid);
         });
-
+        
         document.addEventListener("onToast",(e : Event)=>{
             const { message, action } = (e as CustomEvent).detail.toastDetails;
             this.appInstance.Toast.openToast(message,action);

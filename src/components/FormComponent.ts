@@ -1,5 +1,5 @@
-import { BaseComponent } from "./Base.ts"
-import { StateManagement } from "./State.ts";
+import { BaseComponent } from "./BaseComponent.ts"
+import { StateManagement } from "./StateManagement.ts";
 
 export class FormComponent extends BaseComponent{
     private static instance: FormComponent;
@@ -25,7 +25,6 @@ export class FormComponent extends BaseComponent{
     render():string{
         return `
             <div class="form-container">
-                <h2>Submit Your Details</h2>
                 <div id="toast" class="hide snackbar"></div>
                 <form id="userForm">
                     <div class="form-group">
@@ -82,53 +81,58 @@ export class FormComponent extends BaseComponent{
         this.handleValidation();
     }
 
-    handleSubmit(event:Event):void{
-
+    handleSubmit(event: Event): void {
         this.validateBeforeSubmit();
-
-        console.log("IsvALid main",this.isValid);
-
         event.preventDefault();
-        const name=(document.getElementById("fullName") as HTMLInputElement).value;
-        const email=(document.getElementById("email") as HTMLInputElement).value;
-        const phone=(document.getElementById("phone") as HTMLInputElement).value;
 
-        const submit=(document.getElementById("submit") as HTMLElement);
-
-        if(this.isValid){
-            if(this.row==null){
-                this.stateManager.addPeoples({name,email,phone});
-                this.toastCustomEvent("Form Submitted Successfully","safe");
-            }else{
+        // emit form sumit event with form data  
+    
+        const name = (document.getElementById("fullName") as HTMLInputElement).value;
+        const email = (document.getElementById("email") as HTMLInputElement).value;
+        const phone = (document.getElementById("phone") as HTMLInputElement).value;
+        const password = (document.getElementById("password") as HTMLInputElement).value;
+        const gender = (document.getElementById("gender") as HTMLInputElement).value;
+        const address = (document.getElementById("address") as HTMLInputElement).value;
+        const birthday = (document.getElementById("birthday") as HTMLInputElement).value;
+    
+        const submit = document.getElementById("submit") as HTMLElement;
+    
+        if (this.isValid) {
+            const oldPeoples = [...this.stateManager.getPeoples()];
+    
+            if (this.row == null) {
+                this.stateManager.addPeoples({ name, email, phone , password ,gender ,address ,birthday });
+                this.toastCustomEvent("Form Submitted Successfully", "safe");
+            } else {
                 const cells = this.row.getElementsByTagName("td");
-                const peoples = this.stateManager.getPeoples();
-                const obj:{ name: string; email: string; phone: string}=peoples.find((pep:{name:string,email:string,phone:string})=>{
-                    return pep.email==cells[1].innerText;
-                })
+                
+                const objIndex = oldPeoples.findIndex((pep) => pep.email === cells[1].innerText);
     
-                const idx:number=peoples.indexOf(obj);
+                if (objIndex !== -1) {
+                    oldPeoples[objIndex] = { name, email, phone , password ,gender ,address , birthday };
+                    this.stateManager.notifyStateChange(true, oldPeoples);
+                    
+                    cells[0].innerText = name;
+                    cells[1].innerText = email;
+                    cells[2].innerText = phone;
     
-                peoples[idx]={name,email,phone};
+                    submit.innerText = "Submit";
+                    this.row = null;
     
-                cells[0].innerText=name;
-                cells[1].innerText=email;
-                cells[2].innerText=phone;
-    
-                submit.innerText="Submit";
-                this.row=null;
-    
-                this.stateManager.notifyStateChange(true);
-                this.toastCustomEvent("Form edited Successfully","safe");
+                    this.stateManager.setPeoples(oldPeoples);
+                    this.stateManager.notifyStateChange(false, []);
+                    
+                    this.toastCustomEvent("Form Edited Successfully", "safe");
+                }
             }
-
-            this.isValid=true;
-
-            const resetForm = <HTMLFormElement>document.getElementById("userForm");
-            resetForm?.reset();
-        }else{
-            this.toastCustomEvent("Enter All Fields Before Submitting","danger");
-        }   
+    
+            this.isValid = true;
+            (document.getElementById("userForm") as HTMLFormElement).reset();
+        } else {
+            this.toastCustomEvent("Enter All Fields Before Submitting", "danger");
+        }
     }
+    
 
     toastCustomEvent(message:string,action:string):void{
         const toastDetails={message:message,action:action};

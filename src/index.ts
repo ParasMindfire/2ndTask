@@ -1,4 +1,4 @@
-import { AppComponent } from "./components/App.ts";
+import { AppComponent } from "./components/AppComponent.ts";
 
 const app = AppComponent.getInstance();
 app.mount("appComponent")

@@ -1,4 +1,16 @@
 export class Validation {
+    
+    private static instance:Validation;
+
+    private constructor(){};
+
+    public static getInstance():Validation{
+        if(!Validation.instance){
+            Validation.instance=new Validation();
+        }
+        return Validation.instance;
+    }
+
     private validationRules: { [key: string]: RegExp } = {
         fullName: /^[a-zA-Z\s]+$/,
         email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -13,12 +25,11 @@ export class Validation {
         fullName: "Full name must contain only letters and spaces.",
         email: "Please enter a valid email address.",
         phone: "Phone number must be 10 digits.",
-        password: "Password must contain at least 8 characters, including uppercase, lowercase, and a number.",
+        password: "Password must contain 8 characters, including uppercase, lowercase, and a number.",
         gender: "Please select a valid gender.",
         address: "Address cannot be empty.",
         birthday: "Please enter a valid date (YYYY-MM-DD)."
     };
-
 
     validateField(field: string, value: string): boolean {
         // console.log("field ",field)
@@ -34,9 +45,9 @@ export class Validation {
         if (errorElement) {
             if (!isValid) {
                 errorElement.textContent = this.errorMessages[field];
-                setTimeout(() => {
-                    errorElement.textContent = "";
-                }, 3000);
+                // setTimeout(() => {
+                //     errorElement.textContent = "";
+                // }, 3000);
             } else {
                 errorElement.textContent = "";
             }
@@ -53,7 +64,6 @@ export class Validation {
                 if (!isValid) {
                     allValid = false;
                 }
-
                 // console.log("field ",field);
                 // console.log("value ",value);
                 // console.log("is VAlid before",allValid);

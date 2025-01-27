@@ -1,5 +1,5 @@
-import { BaseComponent } from "./Base.ts";
-import { StateManagement } from "./State.ts";
+import { BaseComponent } from "./BaseComponent.ts";
+import { StateManagement } from "./StateManagement.ts";
 
 export class TableComponent extends BaseComponent {
 
@@ -93,20 +93,26 @@ export class TableComponent extends BaseComponent {
 
     handleDelete(element: HTMLElement): void {
         const row = element.closest("tr");
-        const peoples = this.stateManager.getPeoples();
+        // const peoples = this.stateManager.getPeoples();
+        const oldPeoples = [...this.stateManager.getPeoples()];
     
         if (row) {
             const cells = row.getElementsByTagName("td");
             const emailToDelete = cells[1].innerText;
 
-            const objIndex = peoples.findIndex((pep: { name: string; email: string; phone: string }) => {
+            // this.stateManager.notifyStateChange(true, oldPeoples);
+
+            const objIndex = oldPeoples.findIndex((pep: { name: string; email: string; phone: string ; password:string ; gender:string ; address:string ;birthday:string}) => {
                 return pep.email === emailToDelete;
             });
+
             
             if (objIndex !== -1) {
-                peoples.splice(objIndex, 1);
-                console.log("people after delete", peoples);
-                this.stateManager.notifyStateChange(true);
+                oldPeoples.splice(objIndex, 1);
+                // console.log("people after delete", peoples);
+                this.stateManager.setPeoples(oldPeoples);
+                this.stateManager.notifyStateChange(true, oldPeoples);
+                // this.stateManager.notifyStateChange(false, []);
             }
 
             this.toastCustomEvent("Form deleted Successfully","safe");
